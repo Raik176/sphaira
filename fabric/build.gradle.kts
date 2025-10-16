@@ -25,6 +25,7 @@ fletchingTable {
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api")}")
+    modImplementation(fletchingTable.modrinth("modmenu", minecraft))
 }
 
 fun convertMinecraftTargets(): String {
@@ -41,7 +42,8 @@ tasks.processResources {
         "author" to mod.prop("author"),
         "license" to mod.prop("license"),
         "minecraft" to convertMinecraftTargets(),
-        "group" to mod.group
+        "group" to mod.group,
+        "github" to mod.prop("github")
     )
 }
 

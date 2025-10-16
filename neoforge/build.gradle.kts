@@ -41,8 +41,15 @@ tasks.processResources {
         "description" to mod.prop("description"),
         "author" to mod.prop("author"),
         "license" to mod.prop("license"),
-        "minecraft" to convertMinecraftTargets()
+        "minecraft" to convertMinecraftTargets(),
+        "github" to mod.prop("github")
     )
+
+    if (stonecutter.eval(minecraft, "<1.20.5")) {
+        filesMatching("neoforge.mods.toml") {
+            name = "mods.toml"
+        }
+    }
 }
 
 publishMods {

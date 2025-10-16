@@ -1,0 +1,8 @@
+{
+  "required": true,
+  "package": "de.rhm176.sphaira.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

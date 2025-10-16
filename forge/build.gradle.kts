@@ -41,7 +41,8 @@ tasks.processResources {
         "description" to mod.prop("description"),
         "author" to mod.prop("author"),
         "license" to mod.prop("license"),
-        "minecraft" to convertMinecraftTargets()
+        "minecraft" to convertMinecraftTargets(),
+        "github" to mod.prop("github")
     )
 }
 

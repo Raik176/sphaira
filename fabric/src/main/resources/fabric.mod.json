@@ -8,7 +8,9 @@
     "${author}"
   ],
   "contact": {
-
+    "homepage": "https://rhm176.de",
+    "sources": "https://github.com/${github}",
+    "issues": "https://github.com/${github}/issues"
   },
   "license": "${license}",
   "icon": "assets/${id}/icon.png",
@@ -20,5 +22,15 @@
     "fabricloader": ">=0.17.2",
     "minecraft": "${minecraft}",
     "fabric": "*"
+  },
+  "suggests": {
+    "modmenu": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [
+        "library"
+      ]
+    }
   }
 }

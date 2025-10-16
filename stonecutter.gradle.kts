@@ -44,7 +44,7 @@ plugins {
     id("dev.kikugie.fletching-table.lexforge") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
 }
-stonecutter active "1.20.6" /* [SC] DO NOT EDIT */
+stonecutter active "1.19" /* [SC] DO NOT EDIT */
 
 val changelogProvider = layout.buildDirectory.file("CHANGELOG.md")
 changelogProvider.get().asFile.apply {
