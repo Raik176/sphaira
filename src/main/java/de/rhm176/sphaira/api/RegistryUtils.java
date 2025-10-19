@@ -1,6 +1,8 @@
-package de.rhm176.sphaira;
+package de.rhm176.sphaira.api;
 
 import com.google.common.collect.ImmutableSet;
+import de.rhm176.sphaira.SphairaCommon;
+import de.rhm176.sphaira.api.resource.IdUtils;
 import net.minecraft.core.Registry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -15,26 +17,26 @@ import java.util.Set;
 import java.util.function.Supplier;
 
 //? if >=1.19.3
-/*import net.minecraft.core.registries.BuiltInRegistries;*/
+import net.minecraft.core.registries.BuiltInRegistries;
 
 public class RegistryUtils {
     //? if >=1.19.3 {
-    /*public static final Registry<Item> ITEM_REGISTRY = BuiltInRegistries.ITEM;
+    public static final Registry<Item> ITEM_REGISTRY = BuiltInRegistries.ITEM;
     public static final Registry<Block> BLOCK_REGISTRY = BuiltInRegistries.BLOCK;
     public static final Registry<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY = BuiltInRegistries.BLOCK_ENTITY_TYPE;
     public static final Registry<EntityType<?>> ENTITY_TYPE_REGISTRY = BuiltInRegistries.ENTITY_TYPE;
     public static final Registry<RecipeType<?>> RECIPE_TYPE_REGISTRY = BuiltInRegistries.RECIPE_TYPE;
     public static final Registry<RecipeSerializer<?>> RECIPE_SERIALIZER_REGISTRY = BuiltInRegistries.RECIPE_SERIALIZER;
     //? if >=1.20.5
-    /^public static final Registry<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = BuiltInRegistries.DATA_COMPONENT_TYPE;^/
-    *///?} else {
-    public static final Registry<Item> ITEM_REGISTRY = Registry.ITEM;
+    /*public static final Registry<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = BuiltInRegistries.DATA_COMPONENT_TYPE;*/
+    //?} else {
+    /*public static final Registry<Item> ITEM_REGISTRY = Registry.ITEM;
     public static final Registry<Block> BLOCK_REGISTRY = Registry.BLOCK;
     public static final Registry<BlockEntityType<?>> BLOCK_ENTITY_TYPE_REGISTRY = Registry.BLOCK_ENTITY_TYPE;
     public static final Registry<EntityType<?>> ENTITY_TYPE_REGISTRY = Registry.ENTITY_TYPE;
     public static final Registry<RecipeType<?>> RECIPE_TYPE_REGISTRY = Registry.RECIPE_TYPE;
     public static final Registry<RecipeSerializer<?>> RECIPE_SERIALIZER_REGISTRY = Registry.RECIPE_SERIALIZER;
-    //?}
+    *///?}
 
     public static class WrappedRegistry<T> {
         private final String namespace;

@@ -1,5 +1,6 @@
-package de.rhm176.sphaira;
+package de.rhm176.sphaira.api;
 
+import de.rhm176.sphaira.SphairaCommon;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.Annotation;

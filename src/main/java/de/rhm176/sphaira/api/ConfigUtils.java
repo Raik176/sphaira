@@ -1,4 +1,4 @@
-package de.rhm176.sphaira;
+package de.rhm176.sphaira.api;
 
 import net.minecraft.client.gui.screens.Screen;
 import oshi.util.tuples.Pair;

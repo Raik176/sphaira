@@ -39,12 +39,13 @@ plugins {
 
     kotlin("jvm") version "2.2.10" apply false
     id("com.google.devtools.ksp") version "2.2.10-2.0.2" apply false
+
     id("dev.kikugie.fletching-table") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.lexforge") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
 }
-stonecutter active "1.19" /* [SC] DO NOT EDIT */
+stonecutter active "1.20.4" /* [SC] DO NOT EDIT */
 
 val changelogProvider = layout.buildDirectory.file("CHANGELOG.md")
 changelogProvider.get().asFile.apply {
@@ -139,13 +140,11 @@ for (node in stonecutter.tree.nodes) {
             archiveClassifier = "dev-shadow"
         }
 
-        node.project.tasks.named("validateAccessWidener") {
-            enabled = false
-        }
+
 
         node.project.tasks.withType<RemapJarTask> {
             injectAccessWidener = true
-            input = node.project.tasks.shadowJar.get().archiveFile
+            inputFile = node.project.tasks.shadowJar.get().archiveFile
             archiveClassifier = null
             dependsOn(node.project.tasks.shadowJar)
         }

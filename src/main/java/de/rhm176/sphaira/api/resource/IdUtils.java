@@ -1,4 +1,4 @@
-package de.rhm176.sphaira;
+package de.rhm176.sphaira.api.resource;
 
 import net.minecraft.resources.ResourceLocation;
 

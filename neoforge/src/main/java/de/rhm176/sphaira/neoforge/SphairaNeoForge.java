@@ -25,11 +25,11 @@ import net.neoforged.neoforgespi.language.ModFileScanData;
 import java.util.stream.Collectors;
 
 //? if >=1.20.6 {
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+/*import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import org.jetbrains.annotations.NotNull;
 import net.minecraft.client.Minecraft;
-//?} else
-/*import net.neoforged.neoforge.client.ConfigScreenHandler;*/
+*///?} else
+import net.neoforged.neoforge.client.ConfigScreenHandler;
 
 @Mod(SphairaCommon.MOD_ID)
 public class SphairaNeoForge {
@@ -92,6 +92,21 @@ public class SphairaNeoForge {
         public boolean isDevelopmentEnvironment() {
             return false;
             //return !FMLLoader.isProduction(); //TODO: can't refernce from static context, wait for stonecutter to fix project bug
+        }
+
+        @Override
+        public <T> void registerPayload(PacketContainer<T> container) {
+
+        }
+
+        @Override
+        public void sendToServer(CustomPacketPayload payload) {
+
+        }
+
+        @Override
+        public void sendToPlayer(CustomPacketPayload payload, ServerPlayer player) {
+
         }
 
         @Override

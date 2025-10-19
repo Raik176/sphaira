@@ -2,7 +2,7 @@ package de.rhm176.sphaira.fabric.compat;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import de.rhm176.sphaira.ConfigUtils;
+import de.rhm176.sphaira.api.ConfigUtils;
 import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
 import net.minecraft.client.gui.screens.Screen;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class ModMenuCompat implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return null;
+        return (ConfigScreenFactory<Screen>) screen -> null;
     }
 
     @Override

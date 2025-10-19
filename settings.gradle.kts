@@ -11,7 +11,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.7.9"
+    id("dev.kikugie.stonecutter") version "0.8-alpha.7"
 }
 
 stonecutter {
@@ -34,7 +34,5 @@ stonecutter {
         ) }
     }
 }
-
-include("testMod")
 
 rootProject.name = "Sphaira"
