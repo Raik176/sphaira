@@ -288,7 +288,7 @@ tasks.register("publishMod") {
     dependsOn(tasks.named("publishGithub"))
 
     doLast {
-        if (providers.environmentVariable("PUBLISH_DRY_RUN").isPresent)
+        if (providers.environmentVariable("PUBLISH_DRY_RUN").isPresent || !providers.environmentVariable("DISCORD_WEBHOOK").isPresent)
             return@doLast
 
         with(URI(providers.environmentVariable("DISCORD_WEBHOOK").get()).toURL().openConnection() as HttpURLConnection) {
