@@ -148,7 +148,8 @@ for (node in stonecutter.tree.nodes) {
                     from(node.project.components["java"])
 
                     groupId = mod.group
-                    artifactId = "sphaira-$loader"
+                    artifactId = mod.id
+                    version = "${mod.version}+$minecraft-$loader"
                 }
             }
 
@@ -196,11 +197,6 @@ for (node in stonecutter.tree.nodes) {
                     accessToken = providers.environmentVariable("CF_API_KEY")
                     projectId = mod.prop("curseforgeId")
                     minecraftVersions = common.mod.prop("mc_targets").split(" ")
-                }
-                github {
-                    accessToken = providers.environmentVariable("GITHUB_TOKEN")
-
-                    parent(rootProject.tasks.named("publishGithub"))
                 }
 
                 dryRun = providers.environmentVariable("PUBLISH_DRY_RUN").isPresent
