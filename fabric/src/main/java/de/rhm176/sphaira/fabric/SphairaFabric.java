@@ -4,6 +4,7 @@ import de.rhm176.sphaira.api.networking.*;
 import de.rhm176.sphaira.api.resource.IdUtils;
 import de.rhm176.sphaira.api.resource.ResourceUtils;
 import dev.kikugie.fletching_table.annotation.fabric.Entrypoint;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
 import de.rhm176.sphaira.SphairaCommon;
@@ -59,7 +60,7 @@ public class SphairaFabric implements ModInitializer {
             }
 
             //? if >=1.20.5 {
-            /*@Override
+            @Override
             public <T> void registerPayload(PacketContainer<T> container) {
                 switch (container.stage()) {
                     case CONFIGURATION -> {
@@ -116,8 +117,8 @@ public class SphairaFabric implements ModInitializer {
                     }
                 }
             }
-            *///?} else {
-            @Override
+            //?} else {
+            /*@Override
             public <T> void registerPayload(PacketContainer<T> container) {
                 switch (container.stage()) {
                     case CONFIGURATION -> {
@@ -158,10 +159,10 @@ public class SphairaFabric implements ModInitializer {
                     }
                 }
             }
-            //?}
+            *///?}
 
             //? if >=1.20.5 {
-            /*@Override
+            @Override
             public void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
                 ClientPlayNetworking.send(payload);
             }
@@ -170,17 +171,23 @@ public class SphairaFabric implements ModInitializer {
             public void sendToPlayer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload, ServerPlayer player) {
                 ServerPlayNetworking.send(player, payload);
             }
-            *///?} else {
-            @Override
-            public void sendToServer(ResourceLocation channel, FriendlyByteBuf payload) {
-                ClientPlayNetworking.send(channel, payload);
+            //?} else {
+            /*@Override
+            public <T> void sendToServer(PacketContainer<T> container, T packet) {
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.EMPTY_BUFFER);
+                container.serializer().encodeConsumer().accept(buf, packet);
+
+                ClientPlayNetworking.send(container.channel(), buf);
             }
 
             @Override
-            public void sendToPlayer(ResourceLocation channel, FriendlyByteBuf payload, ServerPlayer player) {
-                ServerPlayNetworking.send(player, channel, payload);
+            public <T> void sendToPlayer(ServerPlayer player, PacketContainer<T> container, T packet) {
+                FriendlyByteBuf buf = new FriendlyByteBuf(Unpooled.EMPTY_BUFFER);
+                container.serializer().encodeConsumer().accept(buf, packet);
+
+                ServerPlayNetworking.send(player, container.channel(), buf);
             }
-            //?}
+            *///?}
 
             @Override
             public <T> Set<T> getPlugins(String id, Class<T> entrypointClass, Class<? extends Annotation> annotationClass) {

@@ -17,15 +17,20 @@ architectury {
 }
 
 repositories {
+    mavenCentral()
     maven("https://maven.minecraftforge.net")
 }
 
 dependencies {
     "forge"("net.minecraftforge:forge:$minecraft-${common.mod.dep("forge_loader")}")
 
+    "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
+        annotationProcessor(it)
+        compileOnly(it)
+    }
     "io.github.llamalad7:mixinextras-forge:${mod.dep("mixin_extras")}".let {
-        add("include", it)
-        add("implementation", it)
+        include(it)
+        implementation(it)
     }
 }
 

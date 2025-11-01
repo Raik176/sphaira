@@ -1,19 +1,20 @@
 package de.rhm176.sphaira.client.api;
 
 import de.rhm176.sphaira.client.SphairaClient;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 
 public class ScreenUtils {
-    public static <T extends AbstractContainerMenu> void registerMenuScreen(MenuType<T> type, MenuScreenFactory<T> factory) {
+    public static <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerMenuScreen(MenuType<? extends M> type, MenuScreenFactory<M, U> factory) {
         SphairaClient.IMPL.registerScreen(type, factory);
     }
 
     @FunctionalInterface
-    public interface MenuScreenFactory<T extends AbstractContainerMenu> {
-        <S extends AbstractContainerScreen<T>> S create(T menu, Inventory inventory, Component title);
+    public interface MenuScreenFactory<M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> {
+        U create(M menu, Inventory inventory, Component title);
     }
 }

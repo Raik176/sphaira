@@ -2,7 +2,6 @@ package de.rhm176.sphaira;
 
 import de.rhm176.sphaira.api.networking.PacketContainer;
 import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import org.slf4j.Logger;
@@ -32,12 +31,12 @@ public class SphairaCommon {
 
         <T> void registerPayload(PacketContainer<T> container);
         //? if >=1.20.5 {
-        /*void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload);
+        void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload);
         void sendToPlayer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload, ServerPlayer player);
-        *///?} else {
-        void sendToServer(ResourceLocation channel, FriendlyByteBuf payload);
-        void sendToPlayer(ResourceLocation channel, FriendlyByteBuf payload, ServerPlayer player);
-        //?}
+        //?} else {
+        /*<T> void sendToServer(PacketContainer<T> container, T packet);
+        <T> void sendToPlayer(ServerPlayer player, PacketContainer<T> container, T packet);
+        *///?}
 
         <T> Set<T> getPlugins(String id, Class<T> entrypointClass, Class<? extends Annotation> annotationClass);
 

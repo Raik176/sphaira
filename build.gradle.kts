@@ -3,8 +3,6 @@ plugins {
     id("architectury-plugin")
 
     id("dev.kikugie.fletching-table")
-
-    id("maven-publish")
 }
 
 val minecraft = stonecutter.current.version
@@ -18,33 +16,12 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
     compileOnly("org.jetbrains:annotations:${mod.dep("jetbrains_annotations")}")
+    "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
+        annotationProcessor(it)
+        compileOnly(it)
+    }
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-            artifactId = "sphaira"
-        }
-    }
-
-    val repoUrl = System.getenv("REPOSILITE_URL")
-    val repoUser = System.getenv("REPOSILITE_USERNAME")
-    val repoPass = System.getenv("REPOSILITE_PASSWORD")
-    if (System.getenv("CI") == "true" && repoUrl != null && repoUser != null && repoPass != null) {
-        repositories {
-            maven {
-                url = uri(repoUrl)
-
-                credentials(PasswordCredentials::class.java) {
-                    username = repoUser
-                    password = repoPass
-                }
-
-                authentication {
-                    create<BasicAuthentication>("basic")
-                }
-            }
-        }
-    }
+java {
+    withSourcesJar()
 }

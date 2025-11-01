@@ -12,6 +12,8 @@ import kotlinx.serialization.json.putJsonArray
 import kotlinx.serialization.json.putJsonObject
 import net.fabricmc.loom.task.RemapJarTask
 import net.fabricmc.loom.task.RemapSourcesJarTask
+import org.gradle.kotlin.dsl.from
+import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.withType
 import java.net.HttpURLConnection
 import java.net.URI
@@ -45,7 +47,7 @@ plugins {
     id("dev.kikugie.fletching-table.lexforge") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
 }
-stonecutter active "1.20.4" /* [SC] DO NOT EDIT */
+stonecutter active "1.20.6" /* [SC] DO NOT EDIT */
 
 val changelogProvider = layout.buildDirectory.file("CHANGELOG.md")
 changelogProvider.get().asFile.apply {
@@ -83,6 +85,7 @@ for (node in stonecutter.tree.nodes) {
     node.project.plugins.apply("org.jetbrains.kotlin.jvm")
     node.project.plugins.apply("com.google.devtools.ksp")
     node.project.plugins.apply("com.gradleup.shadow")
+    node.project.plugins.apply("maven-publish")
 
     node.project.afterEvaluate {
         val projectStonecutter = node.project.extensions.getByType<dev.kikugie.stonecutter.build.StonecutterBuildExtension>()
@@ -124,11 +127,6 @@ for (node in stonecutter.tree.nodes) {
         }
 
         node.project.dependencies {
-            "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
-                add("annotationProcessor", it)
-                add("implementation", it)
-            }
-
             if (loader != "common") {
                 commonBundle(project(common.path, "namedElements")) { isTransitive = false }
                 shadowBundle(project(common.path, "transformProduction$fancyName")) { isTransitive = false }
@@ -140,8 +138,6 @@ for (node in stonecutter.tree.nodes) {
             archiveClassifier = "dev-shadow"
         }
 
-
-
         node.project.tasks.withType<RemapJarTask> {
             injectAccessWidener = true
             inputFile = node.project.tasks.shadowJar.get().archiveFile
@@ -151,6 +147,36 @@ for (node in stonecutter.tree.nodes) {
 
         node.project.tasks.withType<Jar> {
             archiveClassifier = "dev"
+        }
+
+        node.project.extensions.configure<PublishingExtension> {
+            publications {
+                create<MavenPublication>("mavenJava") {
+                    from(components["java"])
+                    groupId = mod.group
+                    artifactId = "sphaira-$loader"
+                }
+            }
+
+            val repoUrl = System.getenv("REPOSILITE_URL")
+            val repoUser = System.getenv("REPOSILITE_USERNAME")
+            val repoPass = System.getenv("REPOSILITE_PASSWORD")
+            if (repoUrl != null && repoUser != null && repoPass != null) {
+                repositories {
+                    maven {
+                        url = uri(repoUrl)
+
+                        credentials(PasswordCredentials::class.java) {
+                            username = repoUser
+                            password = repoPass
+                        }
+
+                        authentication {
+                            create<BasicAuthentication>("basic")
+                        }
+                    }
+                }
+            }
         }
 
         if (loader != "common") {
@@ -194,7 +220,6 @@ for (node in stonecutter.tree.nodes) {
         }
 
         node.project.extensions.configure<JavaPluginExtension> {
-            withSourcesJar()
             val java = when {
                 projectStonecutter.eval(minecraft, ">=1.20.5") -> JavaVersion.VERSION_21
                 projectStonecutter.eval(minecraft, ">=1.17") -> JavaVersion.VERSION_17
@@ -252,6 +277,10 @@ tasks.register("publishMod") {
 
     stonecutter.tree.nodes.forEach {
         it.project.tasks.findByName("publishMods")?.let { publishTask ->
+            dependsOn(publishTask)
+        }
+
+        it.project.tasks.findByName("publish")?.let { publishTask ->
             dependsOn(publishTask)
         }
     }

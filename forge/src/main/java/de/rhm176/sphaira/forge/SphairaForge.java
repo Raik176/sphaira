@@ -4,13 +4,13 @@ import de.rhm176.sphaira.api.ConfigUtils;
 import de.rhm176.sphaira.SphairaCommon;
 import de.rhm176.sphaira.api.networking.*;
 import de.rhm176.sphaira.client.SphairaClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -32,8 +32,24 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import oshi.util.tuples.Pair;
+
+//? if >=1.21.6 {
+/*import net.minecraftforge.eventbus.api.listener.SubscribeEvent;
+*///?} else {
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+//?}
+
 @Mod(SphairaCommon.MOD_ID)
 public class SphairaForge {
+    //? if >=1.20.2 {
+    private static final Map<ResourceLocation, Pair<net.minecraftforge.network.SimpleChannel, PacketContainer<?>>> CHANNELS = new HashMap<>();
+    //?} elif >=1.18 {
+    /*private static final Map<ResourceLocation, Pair<net.minecraftforge.network.simple.SimpleChannel, PacketContainer<?>>> CHANNELS = new HashMap<>();
+    *///?} else {
+    /*private static final Map<ResourceLocation, Pair<net.minecraftforge.fmllegacy.network.simple.SimpleChannel, PacketContainer<?>>> CHANNELS = new HashMap<>();
+    *///?}
+
     @SuppressWarnings("removal")
     public SphairaForge() { // fix some problems on god knows what forge version
         this(FMLJavaModLoadingContext.get());
@@ -112,7 +128,7 @@ public class SphairaForge {
         }
 
         //? if >=1.20.5 {
-        /*@Override
+        @Override
         public <T> void registerPayload(PacketContainer<T> container) {
             net.minecraftforge.network.payload.PayloadConnection<net.minecraft.network.protocol.common.custom.CustomPacketPayload> builder =
                 net.minecraftforge.network.ChannelBuilder.named(container.channel()).optional().payloadChannel();
@@ -141,7 +157,7 @@ public class SphairaForge {
 
         @Override
         public void sendToServer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload) {
-            ClientPacketListener listener = Minecraft.getInstance().getConnection();
+            var listener = Minecraft.getInstance().getConnection();
 
             if (listener != null) {
                 listener.getConnection().send(new net.minecraft.network.protocol.common.ServerboundCustomPayloadPacket(payload));
@@ -152,22 +168,96 @@ public class SphairaForge {
         public void sendToPlayer(net.minecraft.network.protocol.common.custom.CustomPacketPayload payload, ServerPlayer player) {
             player.connection.send(new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(payload));
         }
-        *///?} else {
-        @Override
+        //?} else {
+        /*@Override
         public <T> void registerPayload(PacketContainer<T> container) {
+            //? if >=1.20.2 {
+            var channel = net.minecraftforge.network.ChannelBuilder
+            //?} elif >=1.18 {
+            /^var channel = net.minecraftforge.network.NetworkRegistry.ChannelBuilder
+            ^///?} else {
+            /^var channel = net.minecraftforge.fmllegacy.network.NetworkRegistry.ChannelBuilder
+            ^///?}
+                    .named(container.channel())
+                    //? if >=1.20.2 {
+                    .clientAcceptedVersions((status, ver) -> true)
+                    .serverAcceptedVersions((status, ver) -> true)
+                    .networkProtocolVersion(1)
+                    //?} else {
+                    /^.clientAcceptedVersions((ver) -> true)
+                    .serverAcceptedVersions((ver) -> true)
+                    .networkProtocolVersion(() -> "1")
+                    ^///?}
+                    .simpleChannel();
 
+            //? if >=1.20.2 {
+            channel.messageBuilder(container.clazz(), 0)
+                            .decoder(container.serializer().decodeFunction())
+                            .encoder((packet, buf) -> container.serializer().encodeConsumer().accept(buf, packet))
+                            .consumerMainThread((msg, ctx) -> {
+                                ctx.enqueueWork(() -> container.handler().accept(new PacketContext<>(
+                                        ctx.getSender(),
+                                        msg,
+                                        switch (ctx.getDirection()) {
+                                            case PLAY_TO_CLIENT, LOGIN_TO_CLIENT -> Side.CLIENT;
+                                            default -> Side.SERVER;
+                                        }
+                                )));
+                                ctx.setPacketHandled(true);
+                            }).add();
+            //?} else {
+            /^channel.registerMessage(
+                    0,
+                    container.clazz(),
+                    (packet, buf) -> container.serializer().encodeConsumer().accept(buf, packet),
+                    container.serializer().decodeFunction(),
+                    (msg, ctx) -> {
+                        ctx.get().enqueueWork(() -> container.handler().accept(new PacketContext<>(
+                            ctx.get().getSender(),
+                            msg,
+                            switch (ctx.get().getDirection()) {
+                                case PLAY_TO_CLIENT, LOGIN_TO_CLIENT -> Side.CLIENT;
+                                default -> Side.SERVER;
+                            }
+                        )));
+                        ctx.get().setPacketHandled(true);
+                    }
+            );
+            ^///?}
+
+            CHANNELS.put(container.channel(), new Pair<>(channel, container));
         }
 
         @Override
-        public void sendToServer(ResourceLocation channel, FriendlyByteBuf payload) {
+        public <T> void sendToServer(PacketContainer<T> container, T packet) {
+            var pair = CHANNELS.get(container.channel());
 
+            //? if >=1.20.2 {
+            pair.getA().send(packet, Minecraft.getInstance().getConnection().getConnection());
+            //?} else {
+            /^pair.getA().sendToServer(packet);
+            ^///?}
         }
 
         @Override
-        public void sendToPlayer(ResourceLocation channel, FriendlyByteBuf payload, ServerPlayer player) {
+        public <T> void sendToPlayer(ServerPlayer player, PacketContainer<T> container, T packet) {
+            var pair = CHANNELS.get(container.channel());
 
+            //? if >=1.20.2 {
+            pair.getA().send(packet, player.connection.getConnection());
+            //?} else {
+            /^pair.getA().sendTo(packet, player.connection.connection, switch (pair.getB().stage()) {
+                //? if >=1.18 {
+                case CONFIGURATION -> net.minecraftforge.network.NetworkDirection.LOGIN_TO_CLIENT;
+                case PLAY -> net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
+                //?} else {
+                /^¹case CONFIGURATION -> net.minecraftforge.fmllegacy.network.NetworkDirection.LOGIN_TO_CLIENT;
+                case PLAY -> net.minecraftforge.fmllegacy.network.NetworkDirection.PLAY_TO_CLIENT;
+                ¹^///?}
+            });
+            ^///?}
         }
-        //?}
+        *///?}
 
         @Override
         public <T> Set<T> getPlugins(String id, Class<T> entrypointClass, Class<? extends Annotation> annotationClass) {

@@ -28,7 +28,7 @@ public class RegistryUtils {
     public static final Registry<RecipeType<?>> RECIPE_TYPE_REGISTRY = BuiltInRegistries.RECIPE_TYPE;
     public static final Registry<RecipeSerializer<?>> RECIPE_SERIALIZER_REGISTRY = BuiltInRegistries.RECIPE_SERIALIZER;
     //? if >=1.20.5
-    /*public static final Registry<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = BuiltInRegistries.DATA_COMPONENT_TYPE;*/
+    public static final Registry<net.minecraft.core.component.DataComponentType<?>> DATA_COMPONENT_TYPE_REGISTRY = BuiltInRegistries.DATA_COMPONENT_TYPE;
     //?} else {
     /*public static final Registry<Item> ITEM_REGISTRY = Registry.ITEM;
     public static final Registry<Block> BLOCK_REGISTRY = Registry.BLOCK;

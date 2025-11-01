@@ -9,9 +9,9 @@ import java.util.function.Consumer;
 public final class PacketContainer<T> {
     private final ResourceLocation channel;
     //? if >=1.20.5 {
-    /*private final net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<PayloadPacketWrapper<T>> type;
+    private final net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<PayloadPacketWrapper<T>> type;
     private final net.minecraft.network.codec.StreamCodec<FriendlyByteBuf, PayloadPacketWrapper<T>> streamCodec;
-    *///?}
+    //?}
     private final Consumer<PacketContext<T>> handler;
     private final PayloadSerializer<FriendlyByteBuf, T> serializer;
     private final NetworkingStage stage;
@@ -25,26 +25,26 @@ public final class PacketContainer<T> {
         this.clazz = clazz;
 
         //? if >=1.20.5 {
-        /*this.type = new net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<>(channel());
+        this.type = new net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<>(channel());
         this.streamCodec = net.minecraft.network.protocol.common.custom.CustomPacketPayload.codec(
                 (packet, buf) -> serializer.encodeConsumer().accept(buf, packet.packet()),
                 (buf) -> new PayloadPacketWrapper<>(type, serializer.decodeFunction().apply(buf))
         );
-        *///?}
+        //?}
     }
 
     //? if >=1.20.5 {
-    /*public net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<PayloadPacketWrapper<T>> type() {
+    public net.minecraft.network.protocol.common.custom.CustomPacketPayload.Type<PayloadPacketWrapper<T>> type() {
         return type;
     }
     public net.minecraft.network.codec.StreamCodec<FriendlyByteBuf, PayloadPacketWrapper<T>> streamCodec() {
         return streamCodec;
     }
-    *///?} else {
-    public PayloadSerializer<FriendlyByteBuf, T> serializer() {
+    //?} else {
+    /*public PayloadSerializer<FriendlyByteBuf, T> serializer() {
         return serializer;
     }
-    //?}
+    *///?}
 
     public @NotNull ResourceLocation channel() {
         return channel;
