@@ -22,6 +22,10 @@ dependencies {
     }
 }
 
+tasks.remapSourcesJar {
+    dependsOn(tasks.jar)
+}
+
 java {
     withSourcesJar()
 }
