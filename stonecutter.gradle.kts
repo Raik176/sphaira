@@ -1,18 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar.Companion.shadowJar
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.putJsonObject
 import net.fabricmc.loom.task.RemapJarTask
 import net.fabricmc.loom.task.RemapSourcesJarTask
-import org.gradle.kotlin.dsl.from
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.withType
 import java.net.HttpURLConnection
@@ -133,26 +126,27 @@ for (node in stonecutter.tree.nodes) {
             }
         }
 
-        node.project.tasks.withType<ShadowJar> {
+        node.project.tasks.named<ShadowJar>("shadowJar") {
             configurations = listOf(shadowBundle)
             archiveClassifier = "dev-shadow"
         }
 
-        node.project.tasks.withType<RemapJarTask> {
+        node.project.tasks.named<RemapJarTask>("remapJar") {
             injectAccessWidener = true
             inputFile = node.project.tasks.shadowJar.get().archiveFile
             archiveClassifier = null
             dependsOn(node.project.tasks.shadowJar)
         }
 
-        node.project.tasks.withType<Jar> {
+        node.project.tasks.named<Jar>("jar") {
             archiveClassifier = "dev"
         }
 
         node.project.extensions.configure<PublishingExtension> {
             publications {
                 create<MavenPublication>("mavenJava") {
-                    from(components["java"])
+                    from(node.project.components["java"])
+
                     groupId = mod.group
                     artifactId = "sphaira-$loader"
                 }
