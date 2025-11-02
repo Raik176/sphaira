@@ -15,7 +15,7 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-22.04
-    steps:
+    steps: # Required, otherwise GitHub actions implodes because of missing storage space
       - name: Free Disk Space
         uses: jlumbroso/free-disk-space@main
         with:
@@ -53,7 +53,7 @@ jobs:
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             export PUBLISH_DRY_RUN=1
           fi
-          ./gradlew publishMod --quiet --stacktrace
+          ./gradlew publishMod --stacktrace
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

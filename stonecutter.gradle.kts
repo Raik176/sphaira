@@ -145,7 +145,17 @@ for (node in stonecutter.tree.nodes) {
         node.project.extensions.configure<PublishingExtension> {
             publications {
                 create<MavenPublication>("mavenJava") {
-                    from(node.project.components["java"])
+                    node.project.tasks.named("remapJar").let {
+                        artifact(it) {
+                            builtBy(it)
+                        }
+                    }
+                    node.project.tasks.named("remapSourcesJar").let {
+                        artifact(it) {
+                            classifier = "sources"
+                            builtBy(it)
+                        }
+                    }
 
                     groupId = mod.group
                     artifactId = mod.id
