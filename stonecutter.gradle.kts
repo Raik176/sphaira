@@ -145,12 +145,13 @@ for (node in stonecutter.tree.nodes) {
         node.project.extensions.configure<PublishingExtension> {
             publications {
                 create<MavenPublication>("mavenJava") {
-                    node.project.tasks.named("remapJar").let {
+                    node.project.tasks.named(if (loader == "common") "jar" else "remapJar").let {
                         artifact(it) {
+                            classifier = null
                             builtBy(it)
                         }
                     }
-                    node.project.tasks.named("remapSourcesJar").let {
+                    node.project.tasks.named(if (loader == "common") "sourcesJar" else "remapSourcesJar").let {
                         artifact(it) {
                             classifier = "sources"
                             builtBy(it)
